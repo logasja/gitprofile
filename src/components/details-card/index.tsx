@@ -63,9 +63,8 @@ const ListItem: React.FC<{
   title: React.ReactNode;
   value: React.ReactNode;
   link?: string;
-  skeleton?: boolean;
   social?: boolean;
-}> = ({ icon, title, value, link, skeleton = false, social = true }) => {
+}> = ({ icon, title, value, link, social = true }) => {
   if (social) {
     return (
       <a
@@ -74,9 +73,7 @@ const ListItem: React.FC<{
         rel="noreferrer"
         className="flex justify-start py-2 px-1 items-center"
       >
-        <div className="flex-grow font-medium gap-2 flex items-center my-1">
-          {icon}
-        </div>
+        {icon}
       </a>
     );
   } else {
@@ -87,7 +84,10 @@ const ListItem: React.FC<{
         rel="noreferrer"
         className="flex justify-start py-2 px-1 items-center"
       >
-        <div className="flex-grow font-medium gap-2 flex items-center my-1">
+        <div className="hidden">
+          {title}
+        </div>
+        <div className="font-medium gap-2 flex items-center my-1">
           {icon} {value}
         </div>
       </a>
@@ -111,7 +111,6 @@ const DetailsCard = ({ profile, loading, social, github }: Props) => {
       array.push(
         <ListItem
           key={index}
-          skeleton={true}
           icon={skeleton({ widthCls: 'w-4', heightCls: 'h-4' })}
           title={skeleton({ widthCls: 'w-24', heightCls: 'h-4' })}
           value={skeleton({ widthCls: 'w-full', heightCls: 'h-4' })}
