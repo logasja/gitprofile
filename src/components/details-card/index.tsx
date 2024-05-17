@@ -63,30 +63,36 @@ const ListItem: React.FC<{
   title: React.ReactNode;
   value: React.ReactNode;
   link?: string;
-  skeleton?: boolean;
-}> = ({ icon, title, value, link, skeleton = false }) => {
-  return (
-    <a
-      href={link}
-      target="_blank"
-      rel="noreferrer"
-      className="flex justify-start py-2 px-1 items-center"
-    >
-      <div className="flex-grow font-medium gap-2 flex items-center my-1">
-        {icon} {title}
-      </div>
-      <div
-        className={`${
-          skeleton ? 'flex-grow' : ''
-        } text-sm font-normal text-right mr-2 ml-3 ${link ? 'truncate' : ''}`}
-        style={{
-          wordBreak: 'break-word',
-        }}
+  social?: boolean;
+}> = ({ icon, title, value, link, social = true }) => {
+  if (social) {
+    return (
+      <a
+        href={link}
+        target="_blank"
+        rel="noreferrer"
+        className="flex justify-start py-2 px-1 items-center"
       >
-        {value}
-      </div>
-    </a>
-  );
+        {icon}
+      </a>
+    );
+  } else {
+    return (
+      <a
+        href={link}
+        target="_blank"
+        rel="noreferrer"
+        className="flex justify-start py-1 px-1 items-center"
+      >
+        <div className="hidden">
+          {title}
+        </div>
+        <div className="font-medium gap-2 flex items-center my-1">
+          {icon} {value}
+        </div>
+      </a>
+    );
+  }
 };
 
 /**
@@ -105,7 +111,6 @@ const DetailsCard = ({ profile, loading, social, github }: Props) => {
       array.push(
         <ListItem
           key={index}
-          skeleton={true}
           icon={skeleton({ widthCls: 'w-4', heightCls: 'h-4' })}
           title={skeleton({ widthCls: 'w-24', heightCls: 'h-4' })}
           value={skeleton({ widthCls: 'w-full', heightCls: 'h-4' })}
@@ -124,197 +129,203 @@ const DetailsCard = ({ profile, loading, social, github }: Props) => {
             renderSkeleton()
           ) : (
             <Fragment>
-              {profile.location && (
+              <div className="rows-2">
+                {profile.location && (
+                  <ListItem
+                    icon={<MdLocationOn />}
+                    title="Based in"
+                    social={false}
+                    value={profile.location}
+                  />
+                )}
+                {profile.company && (
+                  <ListItem
+                    icon={<FaBuilding />}
+                    title="Company"
+                    value={profile.company}
+                    social={false}
+                    link={
+                      isCompanyMention(profile.company.trim())
+                        ? companyLink(profile.company.trim())
+                        : undefined
+                    }
+                  />
+                )}
+              </div>
+              <div className="columns-10">
                 <ListItem
-                  icon={<MdLocationOn />}
-                  title="Based in:"
-                  value={profile.location}
+                  icon={<AiFillGithub />}
+                  title="GitHub"
+                  value={github.username}
+                  link={`https://github.com/${github.username}`}
                 />
-              )}
-              {profile.company && (
-                <ListItem
-                  icon={<FaBuilding />}
-                  title="Company:"
-                  value={profile.company}
-                  link={
-                    isCompanyMention(profile.company.trim())
-                      ? companyLink(profile.company.trim())
-                      : undefined
-                  }
-                />
-              )}
-              <ListItem
-                icon={<AiFillGithub />}
-                title="GitHub:"
-                value={github.username}
-                link={`https://github.com/${github.username}`}
-              />
-              {social?.researchGate && (
-                <ListItem
-                  icon={<SiResearchgate />}
-                  title="ResearchGate:"
-                  value={social.researchGate}
-                  link={`https://www.researchgate.net/profile/${social.researchGate}`}
-                />
-              )}
-              {social?.twitter && (
-                <ListItem
-                  icon={<SiTwitter />}
-                  title="Twitter:"
-                  value={social.twitter}
-                  link={`https://twitter.com/${social.twitter}`}
-                />
-              )}
-              {social?.mastodon && (
-                <ListItem
-                  icon={<FaMastodon />}
-                  title="Mastodon:"
-                  value={getFormattedMastodonValue(social.mastodon, false)}
-                  link={getFormattedMastodonValue(social.mastodon, true)}
-                />
-              )}
-              {social?.linkedin && (
-                <ListItem
-                  icon={<FaLinkedin />}
-                  title="LinkedIn:"
-                  value={social.linkedin}
-                  link={`https://www.linkedin.com/in/${social.linkedin}`}
-                />
-              )}
-              {social?.dribbble && (
-                <ListItem
-                  icon={<CgDribbble />}
-                  title="Dribbble:"
-                  value={social.dribbble}
-                  link={`https://dribbble.com/${social.dribbble}`}
-                />
-              )}
-              {social?.behance && (
-                <ListItem
-                  icon={<FaBehanceSquare />}
-                  title="Behance:"
-                  value={social.behance}
-                  link={`https://www.behance.net/${social.behance}`}
-                />
-              )}
-              {social?.facebook && (
-                <ListItem
-                  icon={<FaFacebook />}
-                  title="Facebook:"
-                  value={social.facebook}
-                  link={`https://www.facebook.com/${social.facebook}`}
-                />
-              )}
-              {social?.instagram && (
-                <ListItem
-                  icon={<AiFillInstagram />}
-                  title="Instagram:"
-                  value={social.instagram}
-                  link={`https://www.instagram.com/${social.instagram}`}
-                />
-              )}
-              {social?.reddit && (
-                <ListItem
-                  icon={<FaReddit />}
-                  title="Reddit:"
-                  value={social.reddit}
-                  link={`https://www.reddit.com/user/${social.reddit}`}
-                />
-              )}
-              {social?.threads && (
-                <ListItem
-                  icon={<FaSquareThreads />}
-                  title="Threads:"
-                  value={social.threads}
-                  link={`https://www.threads.net/@${social.threads.replace('@', '')}`}
-                />
-              )}
-              {social?.youtube && (
-                <ListItem
-                  icon={<FaYoutube />}
-                  title="YouTube:"
-                  value={`@${social.youtube}`}
-                  link={`https://www.youtube.com/@${social.youtube}`}
-                />
-              )}
-              {social?.udemy && (
-                <ListItem
-                  icon={<SiUdemy />}
-                  title="Udemy:"
-                  value={social.udemy}
-                  link={`https://www.udemy.com/user/${social.udemy}`}
-                />
-              )}
-              {social?.medium && (
-                <ListItem
-                  icon={<AiFillMediumSquare />}
-                  title="Medium:"
-                  value={social.medium}
-                  link={`https://medium.com/@${social.medium}`}
-                />
-              )}
-              {social?.dev && (
-                <ListItem
-                  icon={<FaDev />}
-                  title="Dev:"
-                  value={social.dev}
-                  link={`https://dev.to/${social.dev}`}
-                />
-              )}
-              {social?.stackoverflow && (
-                <ListItem
-                  icon={<FaStackOverflow />}
-                  title="Stack Overflow:"
-                  value={social.stackoverflow.split('/').slice(-1)}
-                  link={`https://stackoverflow.com/users/${social.stackoverflow}`}
-                />
-              )}
-              {social?.website && (
-                <ListItem
-                  icon={<FaGlobe />}
-                  title="Website:"
-                  value={social.website
-                    .replace('https://', '')
-                    .replace('http://', '')}
-                  link={
-                    !social.website.startsWith('http')
-                      ? `http://${social.website}`
-                      : social.website
-                  }
-                />
-              )}
-              {social?.skype && (
-                <ListItem
-                  icon={<FaSkype />}
-                  title="Skype"
-                  value={social.skype}
-                  link={`skype:${social.skype}?chat`}
-                />
-              )}
-              {social?.telegram && (
-                <ListItem
-                  icon={<FaTelegram />}
-                  title="Telegram"
-                  value={social.telegram}
-                  link={`https://t.me/${social.telegram}`}
-                />
-              )}
-              {social?.phone && (
-                <ListItem
-                  icon={<RiPhoneFill />}
-                  title="Phone:"
-                  value={social.phone}
-                  link={`tel:${social.phone}`}
-                />
-              )}
-              {social?.email && (
-                <ListItem
-                  icon={<RiMailFill />}
-                  title="Email:"
-                  value={social.email}
-                  link={`mailto:${social.email}`}
-                />
-              )}
+                {social?.researchGate && (
+                  <ListItem
+                    icon={<SiResearchgate />}
+                    title="ResearchGate"
+                    value={social.researchGate}
+                    link={`https://www.researchgate.net/profile/${social.researchGate}`}
+                  />
+                )}
+                {social?.twitter && (
+                  <ListItem
+                    icon={<SiTwitter />}
+                    title="Twitter"
+                    value={social.twitter}
+                    link={`https://twitter.com/${social.twitter}`}
+                  />
+                )}
+                {social?.mastodon && (
+                  <ListItem
+                    icon={<FaMastodon />}
+                    title="Mastodon"
+                    value={getFormattedMastodonValue(social.mastodon, false)}
+                    link={getFormattedMastodonValue(social.mastodon, true)}
+                  />
+                )}
+                {social?.linkedin && (
+                  <ListItem
+                    icon={<FaLinkedin />}
+                    title="LinkedIn"
+                    value={social.linkedin}
+                    link={`https://www.linkedin.com/in/${social.linkedin}`}
+                  />
+                )}
+                {social?.dribbble && (
+                  <ListItem
+                    icon={<CgDribbble />}
+                    title="Dribbble"
+                    value={social.dribbble}
+                    link={`https://dribbble.com/${social.dribbble}`}
+                  />
+                )}
+                {social?.behance && (
+                  <ListItem
+                    icon={<FaBehanceSquare />}
+                    title="Behance"
+                    value={social.behance}
+                    link={`https://www.behance.net/${social.behance}`}
+                  />
+                )}
+                {social?.facebook && (
+                  <ListItem
+                    icon={<FaFacebook />}
+                    title="Facebook"
+                    value={social.facebook}
+                    link={`https://www.facebook.com/${social.facebook}`}
+                  />
+                )}
+                {social?.instagram && (
+                  <ListItem
+                    icon={<AiFillInstagram />}
+                    title="Instagram"
+                    value={social.instagram}
+                    link={`https://www.instagram.com/${social.instagram}`}
+                  />
+                )}
+                {social?.reddit && (
+                  <ListItem
+                    icon={<FaReddit />}
+                    title="Reddit"
+                    value={social.reddit}
+                    link={`https://www.reddit.com/user/${social.reddit}`}
+                  />
+                )}
+                {social?.threads && (
+                  <ListItem
+                    icon={<FaSquareThreads />}
+                    title="Threads"
+                    value={social.threads}
+                    link={`https://www.threads.net/@${social.threads.replace('@', '')}`}
+                  />
+                )}
+                {social?.youtube && (
+                  <ListItem
+                    icon={<FaYoutube />}
+                    title="YouTube"
+                    value={`@${social.youtube}`}
+                    link={`https://www.youtube.com/@${social.youtube}`}
+                  />
+                )}
+                {social?.udemy && (
+                  <ListItem
+                    icon={<SiUdemy />}
+                    title="Udemy"
+                    value={social.udemy}
+                    link={`https://www.udemy.com/user/${social.udemy}`}
+                  />
+                )}
+                {social?.medium && (
+                  <ListItem
+                    icon={<AiFillMediumSquare />}
+                    title="Medium"
+                    value={social.medium}
+                    link={`https://medium.com/@${social.medium}`}
+                  />
+                )}
+                {social?.dev && (
+                  <ListItem
+                    icon={<FaDev />}
+                    title="Dev"
+                    value={social.dev}
+                    link={`https://dev.to/${social.dev}`}
+                  />
+                )}
+                {social?.stackoverflow && (
+                  <ListItem
+                    icon={<FaStackOverflow />}
+                    title="Stack Overflow"
+                    value={social.stackoverflow.split('/').slice(-1)}
+                    link={`https://stackoverflow.com/users/${social.stackoverflow}`}
+                  />
+                )}
+                {social?.website && (
+                  <ListItem
+                    icon={<FaGlobe />}
+                    title="Website"
+                    value={social.website
+                      .replace('https://', '')
+                      .replace('http://', '')}
+                    link={
+                      !social.website.startsWith('http')
+                        ? `http://${social.website}`
+                        : social.website
+                    }
+                  />
+                )}
+                {social?.skype && (
+                  <ListItem
+                    icon={<FaSkype />}
+                    title="Skype"
+                    value={social.skype}
+                    link={`skype:${social.skype}?chat`}
+                  />
+                )}
+                {social?.telegram && (
+                  <ListItem
+                    icon={<FaTelegram />}
+                    title="Telegram"
+                    value={social.telegram}
+                    link={`https://t.me/${social.telegram}`}
+                  />
+                )}
+                {social?.phone && (
+                  <ListItem
+                    icon={<RiPhoneFill />}
+                    title="Phone"
+                    value={social.phone}
+                    link={`tel:${social.phone}`}
+                  />
+                )}
+                {social?.email && (
+                  <ListItem
+                    icon={<RiMailFill />}
+                    title="Email"
+                    value={social.email}
+                    link={`mailto:${social.email}`}
+                  />
+                )}
+              </div>
             </Fragment>
           )}
         </div>
