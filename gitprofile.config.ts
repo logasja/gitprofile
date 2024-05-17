@@ -72,7 +72,7 @@ const CONFIG = {
     stackoverflow: '', // example: '1/jeff-atwood'
     skype: '',
     telegram: '',
-    website: 'https://www.logas.me',
+    website: 'https://logas.me',
     phone: '',
     email: 'logasja@gatech.edu',
   },
