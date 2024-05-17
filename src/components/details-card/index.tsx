@@ -82,7 +82,7 @@ const ListItem: React.FC<{
         href={link}
         target="_blank"
         rel="noreferrer"
-        className="flex justify-start py-2 px-1 items-center"
+        className="flex justify-start py-1 px-1 items-center"
       >
         <div className="hidden">
           {title}
@@ -129,7 +129,7 @@ const DetailsCard = ({ profile, loading, social, github }: Props) => {
             renderSkeleton()
           ) : (
             <Fragment>
-              <div className="columns-2">
+              <div className="rows-2">
                 {profile.location && (
                   <ListItem
                     icon={<MdLocationOn />}
